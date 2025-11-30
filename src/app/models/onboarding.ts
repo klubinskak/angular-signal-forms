@@ -1,15 +1,15 @@
 export interface onBoardingContactInfo {
   email: string;
   phoneNumbers: { type: 'Mobile' | 'Home' | 'Work'; number: string }[];
-  secondaryEmail?: string;
-  preferredContactMethod?: 'Email' | 'Phone' | 'SMS';
+  secondaryEmail: string;
+  preferredContactMethod: 'Email' | 'Phone' | 'SMS';
 }
 
 export interface OnboardingUserInfo {
   firstName: string;
   lastName: string;
-  company?: string;
-  role?: string;
+  company: string;
+  role: string;
 }
 
 export interface OnboardingPreferences {
