@@ -1,0 +1,326 @@
+<div class="onboarding-container">
+  <!-- Progress Bar -->
+  <div class="progress-section">
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="progressPercentage()"></div>
+    </div>
+    <div class="progress-text">Step {{ currentStep() + 1 }} of {{ totalSteps }}</div>
+  </div>
+
+  <!-- Step Indicators -->
+  <div class="step-indicators">
+    <div
+      class="step-indicator"
+      [class.active]="currentStep() === 0"
+      [class.completed]="currentStep() > 0"
+      (click)="goToStep(0)">
+      <div class="step-circle">1</div>
+      <div class="step-label">Welcome</div>
+    </div>
+    <div
+      class="step-indicator"
+      [class.active]="currentStep() === 1"
+      [class.completed]="currentStep() > 1"
+      (click)="goToStep(1)">
+      <div class="step-circle">2</div>
+      <div class="step-label">About You</div>
+    </div>
+    <div
+      class="step-indicator"
+      [class.active]="currentStep() === 2"
+      [class.completed]="currentStep() > 2"
+            [class.disabled]="!this.userInfoForm().valid() && !this.userInfoForm().valid()"
+      (click)="goToStep(2)">
+      <div class="step-circle">3</div>
+      <div class="step-label">Contact</div>
+    </div>
+    <div
+      class="step-indicator"
+      [class.active]="currentStep() === 3"
+      [class.completed]="currentStep() > 3"
+      [class.disabled]="!this.userInfoForm().valid() && !this.contactForm().valid()"
+      (click)="goToStep(3)">
+      <div class="step-circle">4</div>
+      <div class="step-label">Preferences</div>
+    </div>
+  </div>
+
+  <!-- Step Content -->
+  <div class="step-content">
+    <!-- Step 0: Welcome -->
+    <div class="step" *ngIf="currentStep() === 0">
+      <div class="welcome-section">
+        <div class="welcome-icon">👋</div>
+        <h1>Welcome to Our Platform!</h1>
+        <p class="welcome-description">
+          We're excited to have you here. Let's get you set up in just a few simple steps.
+          This will only take a couple of minutes.
+        </p>
+        <div class="feature-list">
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Quick and easy setup</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Personalized experience</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Secure and private</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 1: User Info -->
+    <div class="step" *ngIf="currentStep() === 1">
+      <h2>Tell Us About Yourself</h2>
+      <p class="step-description">We'd love to know who you are</p>
+
+      <form class="form-grid">
+        <div class="form-group">
+          <label for="firstName">First Name *</label>
+          <input
+            id="firstName"
+            type="text"
+            [field]="userInfoForm.firstName"
+            placeholder="John"
+            class="form-input" />
+          <div class="error-message" *ngIf="userInfoForm.firstName().invalid() && userInfoForm.firstName().touched()">
+            First name is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last Name *</label>
+          <input
+            id="lastName"
+            type="text"
+            [field]="userInfoForm.lastName"
+            placeholder="Doe"
+            class="form-input" />
+          <div class="error-message" *ngIf="userInfoForm.lastName().invalid() && userInfoForm.lastName().touched()">
+            Last name is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="company">Company</label>
+          <input
+            id="company"
+            type="text"
+            [field]="userInfoForm.company"
+            placeholder="Acme Corp"
+            class="form-input" />
+        </div>
+
+        <div class="form-group">
+          <label for="role">Role</label>
+          <input
+            id="role"
+            type="text"
+            [field]="userInfoForm.role"
+            placeholder="Software Engineer"
+            class="form-input" />
+        </div>
+      </form>
+    </div>
+
+    <!-- Step 2: Contact Info -->
+    <div class="step" *ngIf="currentStep() === 2">
+      <h2>Contact Information</h2>
+      <p class="step-description">How can we reach you?</p>
+
+      <form class="form-stack">
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input
+            id="email"
+            type="email"
+            [field]="contactForm.email"
+            placeholder="john.doe@example.com"
+            class="form-input" />
+          <div class="error-message" *ngIf="contactForm.email().invalid() && contactForm.email().touched()">
+            Email is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="secondaryEmail">Secondary Email</label>
+          <input
+            id="secondaryEmail"
+            type="email"
+            [field]="contactForm.secondaryEmail"
+            placeholder="john.personal@example.com"
+            class="form-input" />
+        </div>
+
+        <div class="form-group">
+          <label>Phone Numbers</label>
+          <div class="phone-numbers">
+            <div class="phone-number-item" *ngFor="let phone of contactInfo().phoneNumbers; let i = index">
+              <select
+                [value]="phone.type"
+                (change)="updatePhoneNumber(i, 'type', $any($event.target).value)"
+                class="phone-type-select">
+                <option value="Mobile">Mobile</option>
+                <option value="Home">Home</option>
+                <option value="Work">Work</option>
+              </select>
+              <input
+                type="tel"
+                [value]="phone.number"
+                (input)="updatePhoneNumber(i, 'number', $any($event.target).value)"
+                placeholder="123-456-7890"
+                class="phone-input" />
+              <button type="button" (click)="removePhoneNumber(i)" class="remove-btn">×</button>
+            </div>
+          </div>
+          <button type="button" (click)="addPhoneNumber()" class="add-phone-btn">
+            + Add Phone Number
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="preferredContactMethod">Preferred Contact Method</label>
+          <select
+            id="preferredContactMethod"
+            [field]="contactForm.preferredContactMethod"
+            class="form-input">
+            <option value="Email">Email</option>
+            <option value="Phone">Phone</option>
+            <option value="SMS">SMS</option>
+          </select>
+        </div>
+      </form>
+    </div>
+
+    <!-- Step 3: Preferences -->
+    <div class="step" *ngIf="currentStep() === 3">
+      <h2>Set Your Preferences</h2>
+      <p class="step-description">Customize your experience</p>
+
+      <form class="form-stack preferences-form">
+        <div class="form-group">
+          <label for="theme">Theme</label>
+          <div class="theme-selector">
+            <label class="theme-option" [class.selected]="preferences().theme === 'light'">
+              <input
+                type="radio"
+                value="light"
+                [field]="preferencesForm.theme" />
+              <div class="theme-box">
+                <div class="theme-icon">☀️</div>
+                <div>Light</div>
+              </div>
+            </label>
+            <label class="theme-option" [class.selected]="preferences().theme === 'dark'">
+              <input
+                type="radio"
+                value="dark"
+                [field]="preferencesForm.theme" />
+              <div class="theme-box">
+                <div class="theme-icon">🌙</div>
+                <div>Dark</div>
+              </div>
+            </label>
+            <label class="theme-option" [class.selected]="preferences().theme === 'auto'">
+              <input
+                type="radio"
+                value="auto"
+                [field]="preferencesForm.theme" />
+              <div class="theme-box">
+                <div class="theme-icon">⚡</div>
+                <div>Auto</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="language">Language</label>
+          <select
+            id="language"
+            [field]="preferencesForm.language"
+            class="form-input">
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+          </select>
+        </div>
+
+        <div class="toggle-group">
+          <label class="toggle-item">
+            <input
+              type="checkbox"
+              [field]="preferencesForm.newsletter"
+              class="toggle-input" />
+            <span class="toggle-label">
+              <strong>Newsletter</strong>
+              <small>Receive our weekly newsletter with updates and tips</small>
+            </span>
+          </label>
+
+          <label class="toggle-item">
+            <input
+              type="checkbox"
+              [field]="preferencesForm.notifications"
+              class="toggle-input" />
+            <span class="toggle-label">
+              <strong>Notifications</strong>
+              <small>Get notified about important updates and activities</small>
+            </span>
+          </label>
+        </div>
+
+        <div class="review-section">
+          <h3>Review Your Information</h3>
+          <div class="review-grid">
+            <div class="review-item">
+              <strong>Name:</strong> {{ userInfo().firstName }} {{ userInfo().lastName }}
+            </div>
+            <div class="review-item" *ngIf="userInfo().company">
+              <strong>Company:</strong> {{ userInfo().company }}
+            </div>
+            <div class="review-item">
+              <strong>Email:</strong> {{ contactInfo().email }}
+            </div>
+            <div class="review-item">
+              <strong>Theme:</strong> {{ preferences().theme }}
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Navigation Buttons -->
+  <div class="button-group">
+    <button
+      type="button"
+      (click)="previousStep()"
+      [disabled]="isFirstStep()"
+      class="btn btn-secondary">
+      ← Previous
+    </button>
+
+    <button
+      type="button"
+      *ngIf="!isLastStep()"
+      (click)="nextStep()"
+      [disabled]="!canProceed()"
+      class="btn btn-primary">
+      Next →
+    </button>
+
+    <button
+      type="button"
+      *ngIf="isLastStep()"
+      (click)="submitOnboarding()"
+      class="btn btn-success">
+      Complete Setup ✓
+    </button>
+  </div>
+</div>
