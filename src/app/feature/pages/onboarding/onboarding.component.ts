@@ -10,7 +10,14 @@ import {
   OnboardingPreferences,
   OnboardingData,
 } from '../../../models/onboarding';
-import { Field, form, required } from '@angular/forms/signals';
+import {
+  applyEach,
+  email,
+  Field,
+  form,
+  required,
+  validate,
+} from '@angular/forms/signals';
 import { CommonModule } from '@angular/common';
 import { toObservable } from '@angular/core/rxjs-interop';
 
@@ -46,8 +53,8 @@ export class OnboardingComponent {
   });
 
   protected readonly userInfoForm = form(this.userInfo, (path) => {
-    required(path.firstName);
-    required(path.lastName);
+    required(path.firstName, { message: 'First name is required' });
+    required(path.lastName, { message: 'Last name is required' });
   });
 
   // Contact Info (Step 2)
@@ -59,7 +66,55 @@ export class OnboardingComponent {
   });
 
   protected readonly contactForm = form(this.contactInfo, (path) => {
+    //email
     required(path.email);
+    email(path.email, { message: 'Please enter a valid email address' });
+    //secondary email
+    required(path.secondaryEmail);
+    email(path.secondaryEmail, {
+      message: 'Please enter a valid email address',
+    });
+    validate(path.secondaryEmail, ({ value, valueOf }) => {
+      const secondaryEmailValue = value();
+      const emailValue = valueOf(path.email);
+      if (secondaryEmailValue === emailValue) {
+        return {
+          kind: 'secondaryEmailMatch',
+          message: 'Secondary email must be different from primary email',
+        };
+      }
+      return null;
+    });
+    //preferredContactMethod
+    validate(path.preferredContactMethod, ({ value, valueOf }) => {
+      const method = value();
+      const phoneNumbers = valueOf(path.phoneNumbers);
+      if (method === 'Phone' && phoneNumbers.length === 0) {
+        return {
+          kind: 'noPhoneNumbers',
+          message:
+            'Please add at least one phone number to be contacted via Phone',
+        };
+      }
+      return null;
+    });
+    //phone number item
+    applyEach(path.phoneNumbers, (phonePath) => {
+      required(phonePath.type);
+      required(phonePath.number, { message: 'Phone number is required' });
+      validate(phonePath.number, ({ value }) => {
+        const number = value();
+
+        // Tylko cyfry i opcjonalnie +
+        if (number && !/^\+?\d+$/.test(number)) {
+          return {
+            kind: 'onlyDigits',
+            message: 'Only digits allowed',
+          };
+        }
+        return null;
+      });
+    });
   });
 
   // Preferences (Step 3)
@@ -110,10 +165,21 @@ export class OnboardingComponent {
     });
   }
 
-  updatePhoneNumber(index: number, field: 'type' | 'number', value: string) {
+  updatePhoneNumber(
+    index: number,
+    field: 'type' | 'number',
+    value: string
+  ): void {
     const current = this.contactInfo();
+    const phoneNumber = current.phoneNumbers[index];
+
+    if (phoneNumber === undefined) {
+      console.error(`Phone number at index ${index} does not exist`);
+      return;
+    }
+
     const updated = [...current.phoneNumbers];
-    updated[index] = { ...updated[index], [field]: value };
+    updated[index] = { ...phoneNumber, [field]: value };
     this.contactInfo.set({ ...current, phoneNumbers: updated });
   }
 

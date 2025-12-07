@@ -4,42 +4,34 @@
     <div class="progress-bar">
       <div class="progress-fill" [style.width.%]="progressPercentage()"></div>
     </div>
-    <div class="progress-text">Step {{ currentStep() + 1 }} of {{ totalSteps }}</div>
+    <div class="progress-text">
+      Step {{ currentStep() + 1 }} of {{ totalSteps }}
+    </div>
   </div>
 
   <!-- Step Indicators -->
   <div class="step-indicators">
-    <div
-      class="step-indicator"
-      [class.active]="currentStep() === 0"
-      [class.completed]="currentStep() > 0"
+    <div class="step-indicator" [class.active]="currentStep() === 0" [class.completed]="currentStep() > 0"
       (click)="goToStep(0)">
       <div class="step-circle">1</div>
       <div class="step-label">Welcome</div>
     </div>
-    <div
-      class="step-indicator"
-      [class.active]="currentStep() === 1"
-      [class.completed]="currentStep() > 1"
+    <div class="step-indicator" [class.active]="currentStep() === 1" [class.completed]="currentStep() > 1"
       (click)="goToStep(1)">
       <div class="step-circle">2</div>
       <div class="step-label">About You</div>
     </div>
-    <div
-      class="step-indicator"
-      [class.active]="currentStep() === 2"
-      [class.completed]="currentStep() > 2"
-            [class.disabled]="!this.userInfoForm().valid() && !this.userInfoForm().valid()"
-      (click)="goToStep(2)">
+    <div class="step-indicator" [class.active]="currentStep() === 2" [class.completed]="currentStep() > 2"
+      [class.disabled]="
+        !this.userInfoForm().valid() && !this.userInfoForm().valid()
+      " (click)="goToStep(2)">
       <div class="step-circle">3</div>
       <div class="step-label">Contact</div>
     </div>
-    <div
-      class="step-indicator"
-      [class.active]="currentStep() === 3"
-      [class.completed]="currentStep() > 3"
-      [class.disabled]="!this.userInfoForm().valid() && !this.contactForm().valid()"
-      (click)="goToStep(3)">
+    <div class="step-indicator" [class.active]="currentStep() === 3" [class.completed]="currentStep() > 3"
+      [class.disabled]="
+        !this.userInfoForm().valid() && !this.contactForm().valid()
+      " (click)="goToStep(3)">
       <div class="step-circle">4</div>
       <div class="step-label">Preferences</div>
     </div>
@@ -53,8 +45,8 @@
         <div class="welcome-icon">👋</div>
         <h1>Welcome to Our Platform!</h1>
         <p class="welcome-description">
-          We're excited to have you here. Let's get you set up in just a few simple steps.
-          This will only take a couple of minutes.
+          We're excited to have you here. Let's get you set up in just a few
+          simple steps. This will only take a couple of minutes.
         </p>
         <div class="feature-list">
           <div class="feature-item">
@@ -81,48 +73,42 @@
       <form class="form-grid">
         <div class="form-group">
           <label for="firstName">First Name *</label>
-          <input
-            id="firstName"
-            type="text"
-            [field]="userInfoForm.firstName"
-            placeholder="John"
-            class="form-input" />
-          <div class="error-message" *ngIf="userInfoForm.firstName().invalid() && userInfoForm.firstName().touched()">
-            First name is required
+          <input id="firstName" type="text" [field]="userInfoForm.firstName" placeholder="John" class="form-input" />
+          @if(userInfoForm.firstName().invalid() &&
+          userInfoForm.firstName().touched()){
+          <div>
+            @for (error of userInfoForm.firstName().errors(); track error.kind){
+            <div class="error">
+              {{ error.message }}
+            </div>
+            }
           </div>
+          }
         </div>
 
         <div class="form-group">
           <label for="lastName">Last Name *</label>
-          <input
-            id="lastName"
-            type="text"
-            [field]="userInfoForm.lastName"
-            placeholder="Doe"
-            class="form-input" />
-          <div class="error-message" *ngIf="userInfoForm.lastName().invalid() && userInfoForm.lastName().touched()">
-            Last name is required
+          <input id="lastName" type="text" [field]="userInfoForm.lastName" placeholder="Doe" class="form-input" />
+          @if(userInfoForm.lastName().invalid() &&
+          userInfoForm.lastName().touched()){
+          <div>
+            @for (error of userInfoForm.lastName().errors(); track error.kind){
+            <div class="error">
+              {{ error.message }}
+            </div>
+            }
           </div>
+          }
         </div>
 
         <div class="form-group">
           <label for="company">Company</label>
-          <input
-            id="company"
-            type="text"
-            [field]="userInfoForm.company"
-            placeholder="Acme Corp"
-            class="form-input" />
+          <input id="company" type="text" [field]="userInfoForm.company" placeholder="Acme Corp" class="form-input" />
         </div>
 
         <div class="form-group">
           <label for="role">Role</label>
-          <input
-            id="role"
-            type="text"
-            [field]="userInfoForm.role"
-            placeholder="Software Engineer"
-            class="form-input" />
+          <input id="role" type="text" [field]="userInfoForm.role" placeholder="Software Engineer" class="form-input" />
         </div>
       </form>
     </div>
@@ -135,63 +121,90 @@
       <form class="form-stack">
         <div class="form-group">
           <label for="email">Email Address *</label>
-          <input
-            id="email"
-            type="email"
-            [field]="contactForm.email"
-            placeholder="john.doe@example.com"
+          <input id="email" type="email" [field]="contactForm.email" placeholder="john.doe@example.com"
             class="form-input" />
-          <div class="error-message" *ngIf="contactForm.email().invalid() && contactForm.email().touched()">
-            Email is required
+          @if(contactForm.email().invalid() && contactForm.email().touched()){
+          <div>
+            @for (error of contactForm.email().errors(); track error.kind){
+            <div class="error">
+              {{ error.message }}
+            </div>
+            }
           </div>
+          }
         </div>
 
         <div class="form-group">
           <label for="secondaryEmail">Secondary Email</label>
-          <input
-            id="secondaryEmail"
-            type="email"
-            [field]="contactForm.secondaryEmail"
-            placeholder="john.personal@example.com"
-            class="form-input" />
+          <input id="secondaryEmail" type="email" [field]="contactForm.secondaryEmail"
+            placeholder="john.personal@example.com" class="form-input" />
+          @if(contactForm.secondaryEmail().invalid() &&
+          contactForm.secondaryEmail().touched()){
+          <div>
+            @for (error of contactForm.secondaryEmail().errors(); track
+            error.kind){
+            <div class="error">
+              {{ error.message }}
+            </div>
+            }
+          </div>
+          }
         </div>
 
         <div class="form-group">
           <label>Phone Numbers</label>
           <div class="phone-numbers">
-            <div class="phone-number-item" *ngFor="let phone of contactInfo().phoneNumbers; let i = index">
-              <select
-                [value]="phone.type"
-                (change)="updatePhoneNumber(i, 'type', $any($event.target).value)"
-                class="phone-type-select">
+            @for (phoneForm of contactForm.phoneNumbers; let index = $index;
+            track index){
+            <div class="phone-number-row phone-number-item">
+              <select [field]="phoneForm.type" class="phone-type-select">
                 <option value="Mobile">Mobile</option>
                 <option value="Home">Home</option>
                 <option value="Work">Work</option>
               </select>
-              <input
-                type="tel"
-                [value]="phone.number"
-                (input)="updatePhoneNumber(i, 'number', $any($event.target).value)"
-                placeholder="123-456-7890"
-                class="phone-input" />
-              <button type="button" (click)="removePhoneNumber(i)" class="remove-btn">×</button>
+              <input type="tel" [field]="phoneForm.number" placeholder="123-456-7890" class="phone-input" />
+              <div class="remove-btn-container">
+                <button type="button" (click)="removePhoneNumber(index)" class="remove-btn">
+                  ×
+                </button>
+              </div>
             </div>
+                @if(phoneForm.number().invalid() &&
+                phoneForm.number().touched()){
+                <div>
+                  @for (error of phoneForm.number().errors(); track
+                  error.kind){
+                  <div class="error">
+                    {{ error.message }}
+                  </div>
+                  }
+                </div>
+                }
+            }
+            <button type="button" (click)="addPhoneNumber()" class="add-phone-btn">
+              + Add Phone Number
+            </button>
           </div>
-          <button type="button" (click)="addPhoneNumber()" class="add-phone-btn">
-            + Add Phone Number
-          </button>
         </div>
 
         <div class="form-group">
           <label for="preferredContactMethod">Preferred Contact Method</label>
-          <select
-            id="preferredContactMethod"
-            [field]="contactForm.preferredContactMethod"
-            class="form-input">
+          <select id="preferredContactMethod" [field]="contactForm.preferredContactMethod" class="form-input">
             <option value="Email">Email</option>
             <option value="Phone">Phone</option>
             <option value="SMS">SMS</option>
           </select>
+          @if(contactForm.preferredContactMethod().invalid() &&
+          contactForm.preferredContactMethod().touched()){
+          <div>
+            @for (error of contactForm.preferredContactMethod().errors(); track
+            error.kind){
+            <div class="error">
+              {{ error.message }}
+            </div>
+            }
+          </div>
+          }
         </div>
       </form>
     </div>
@@ -206,30 +219,21 @@
           <label for="theme">Theme</label>
           <div class="theme-selector">
             <label class="theme-option" [class.selected]="preferences().theme === 'light'">
-              <input
-                type="radio"
-                value="light"
-                [field]="preferencesForm.theme" />
+              <input type="radio" value="light" [field]="preferencesForm.theme" />
               <div class="theme-box">
                 <div class="theme-icon">☀️</div>
                 <div>Light</div>
               </div>
             </label>
             <label class="theme-option" [class.selected]="preferences().theme === 'dark'">
-              <input
-                type="radio"
-                value="dark"
-                [field]="preferencesForm.theme" />
+              <input type="radio" value="dark" [field]="preferencesForm.theme" />
               <div class="theme-box">
                 <div class="theme-icon">🌙</div>
                 <div>Dark</div>
               </div>
             </label>
             <label class="theme-option" [class.selected]="preferences().theme === 'auto'">
-              <input
-                type="radio"
-                value="auto"
-                [field]="preferencesForm.theme" />
+              <input type="radio" value="auto" [field]="preferencesForm.theme" />
               <div class="theme-box">
                 <div class="theme-icon">⚡</div>
                 <div>Auto</div>
@@ -240,10 +244,7 @@
 
         <div class="form-group">
           <label for="language">Language</label>
-          <select
-            id="language"
-            [field]="preferencesForm.language"
-            class="form-input">
+          <select id="language" [field]="preferencesForm.language" class="form-input">
             <option value="en">English</option>
             <option value="es">Spanish</option>
             <option value="fr">French</option>
@@ -253,10 +254,7 @@
 
         <div class="toggle-group">
           <label class="toggle-item">
-            <input
-              type="checkbox"
-              [field]="preferencesForm.newsletter"
-              class="toggle-input" />
+            <input type="checkbox" [field]="preferencesForm.newsletter" class="toggle-input" />
             <span class="toggle-label">
               <strong>Newsletter</strong>
               <small>Receive our weekly newsletter with updates and tips</small>
@@ -264,10 +262,7 @@
           </label>
 
           <label class="toggle-item">
-            <input
-              type="checkbox"
-              [field]="preferencesForm.notifications"
-              class="toggle-input" />
+            <input type="checkbox" [field]="preferencesForm.notifications" class="toggle-input" />
             <span class="toggle-label">
               <strong>Notifications</strong>
               <small>Get notified about important updates and activities</small>
@@ -279,7 +274,8 @@
           <h3>Review Your Information</h3>
           <div class="review-grid">
             <div class="review-item">
-              <strong>Name:</strong> {{ userInfo().firstName }} {{ userInfo().lastName }}
+              <strong>Name:</strong> {{ userInfo().firstName }}
+              {{ userInfo().lastName }}
             </div>
             <div class="review-item" *ngIf="userInfo().company">
               <strong>Company:</strong> {{ userInfo().company }}
@@ -298,28 +294,15 @@
 
   <!-- Navigation Buttons -->
   <div class="button-group">
-    <button
-      type="button"
-      (click)="previousStep()"
-      [disabled]="isFirstStep()"
-      class="btn btn-secondary">
+    <button type="button" (click)="previousStep()" [disabled]="isFirstStep()" class="btn btn-secondary">
       ← Previous
     </button>
 
-    <button
-      type="button"
-      *ngIf="!isLastStep()"
-      (click)="nextStep()"
-      [disabled]="!canProceed()"
-      class="btn btn-primary">
+    <button type="button" *ngIf="!isLastStep()" (click)="nextStep()" [disabled]="!canProceed()" class="btn btn-primary">
       Next →
     </button>
 
-    <button
-      type="button"
-      *ngIf="isLastStep()"
-      (click)="submitOnboarding()"
-      class="btn btn-success">
+    <button type="button" *ngIf="isLastStep()" (click)="submitOnboarding()" class="btn btn-success">
       Complete Setup ✓
     </button>
   </div>
